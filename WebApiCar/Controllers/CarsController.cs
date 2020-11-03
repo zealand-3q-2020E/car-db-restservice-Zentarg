@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using WebApiCar.Model;
 
 namespace WebApiCar.Controllers
@@ -61,6 +58,40 @@ namespace WebApiCar.Controllers
             return carList;
         }
 
+        // GET: api/Cars
+        [HttpGet("ByVendor/{vendorGet}", Name="GetByVendor")]
+        public IEnumerable<Car> GetByVendor(string vendorGet)
+        {
+            var carList = new List<Car>();
+
+            string selectall = "select id, vendor, model, price from Cars where vendor = @vendor";
+
+            using (SqlConnection databaseConnection = new SqlConnection(conn))
+            {
+                using (SqlCommand selectCommand = new SqlCommand(selectall, databaseConnection))
+                {
+                    selectCommand.Parameters.AddWithValue("@vendor", vendorGet);
+                    databaseConnection.Open();
+
+                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string vendor = reader.GetString(1);
+                            string model = reader.GetString(2);
+                            int price = reader.GetInt32(3);
+
+                            carList.Add(new Car(id, vendor, model, price));
+
+                        }
+
+                    }
+                }
+            }
+            return carList;
+        }
+
         // GET: api/Cars/5
         [HttpGet("{id}", Name = "Get")]
         public Car Get(int id)
@@ -92,6 +123,8 @@ namespace WebApiCar.Controllers
 
             return null;
         }
+
+
 
         /// <summary>
         /// Post a new car to the static list
