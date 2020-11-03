@@ -126,6 +126,44 @@ namespace WebApiCar.Controllers
             return carList;
         }
 
+        // GET: api/Cars
+        [HttpGet("ByPrice/{priceGet}/{ascending}", Name = "GetByPriceOrdered")]
+        public IEnumerable<Car> GetByPriceOrdered(int priceGet, bool ascending)
+        {
+            var carList = new List<Car>();
+
+            string selectall = "select id, vendor, model, price from Cars where price = @price order by id ";
+            if (ascending)
+                selectall += "ASC";
+            else
+                selectall += "DESC";
+
+            using (SqlConnection databaseConnection = new SqlConnection(conn))
+            {
+                using (SqlCommand selectCommand = new SqlCommand(selectall, databaseConnection))
+                {
+                    selectCommand.Parameters.AddWithValue("@price", priceGet);
+                    databaseConnection.Open();
+
+                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string vendor = reader.GetString(1);
+                            string model = reader.GetString(2);
+                            int price = reader.GetInt32(3);
+
+                            carList.Add(new Car(id, vendor, model, price));
+
+                        }
+
+                    }
+                }
+            }
+            return carList;
+        }
+
         // GET: api/Cars/ByVendor/VW/190000
         [HttpGet("ByVendor/{vendorGet}/{priceGet}", Name = "GetByVendorWithPrice")]
         public IEnumerable<Car> GetByVendorWithPrice(string vendorGet, int priceGet)
