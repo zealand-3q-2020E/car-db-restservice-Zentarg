@@ -94,7 +94,7 @@ namespace WebApiCar.Controllers
 
         // GET: api/Cars
         [HttpGet("ByPrice/{priceGet}", Name = "GetByPrice")]
-        public IEnumerable<Car> GetByPrice(string priceGet)
+        public IEnumerable<Car> GetByPrice(int priceGet)
         {
             var carList = new List<Car>();
 
@@ -104,6 +104,41 @@ namespace WebApiCar.Controllers
             {
                 using (SqlCommand selectCommand = new SqlCommand(selectall, databaseConnection))
                 {
+                    selectCommand.Parameters.AddWithValue("@price", priceGet);
+                    databaseConnection.Open();
+
+                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string vendor = reader.GetString(1);
+                            string model = reader.GetString(2);
+                            int price = reader.GetInt32(3);
+
+                            carList.Add(new Car(id, vendor, model, price));
+
+                        }
+
+                    }
+                }
+            }
+            return carList;
+        }
+
+        // GET: api/Cars/ByVendor/VW/190000
+        [HttpGet("ByVendor/{vendorGet}/{priceGet}", Name = "GetByVendorWithPrice")]
+        public IEnumerable<Car> GetByVendorWithPrice(string vendorGet, int priceGet)
+        {
+            var carList = new List<Car>();
+
+            string selectall = "select id, vendor, model, price from Cars where vendor = @vendor and price = @price";
+
+            using (SqlConnection databaseConnection = new SqlConnection(conn))
+            {
+                using (SqlCommand selectCommand = new SqlCommand(selectall, databaseConnection))
+                {
+                    selectCommand.Parameters.AddWithValue("@vendor", vendorGet);
                     selectCommand.Parameters.AddWithValue("@price", priceGet);
                     databaseConnection.Open();
 
