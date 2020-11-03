@@ -34,7 +34,7 @@ namespace WebApiCar.Controllers
         {
             var carList = new List<Car>();
 
-            string selectall = "select id, vendor, model, price from Car";
+            string selectall = "select id, vendor, model, price from Cars";
 
             using (SqlConnection databaseConnection = new SqlConnection(conn))
             {
@@ -57,11 +57,8 @@ namespace WebApiCar.Controllers
 
                     }
                 }
-
-
-                    }
-
-                return carList;
+            }
+            return carList;
         }
 
         // GET: api/Cars/5
