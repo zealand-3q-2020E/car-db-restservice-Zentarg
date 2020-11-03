@@ -65,7 +65,32 @@ namespace WebApiCar.Controllers
         [HttpGet("{id}", Name = "Get")]
         public Car Get(int id)
         {
-            return carList.FirstOrDefault(x => x.Id == id);
+
+            string select = "select vendor, model, price from Cars where id = @id";
+
+            using (SqlConnection databaseConnection = new SqlConnection(conn))
+            {
+                using (SqlCommand selectCommand = new SqlCommand(select, databaseConnection))
+                {
+                    selectCommand.Parameters.AddWithValue("@id", id);
+                    databaseConnection.Open();
+
+                    using (SqlDataReader reader = selectCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string vendor = reader.GetString(0);
+                            string model = reader.GetString(1);
+                            int price = reader.GetInt32(2);
+
+                            return new Car(id, vendor, model, price);
+                        }
+
+                    }
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
