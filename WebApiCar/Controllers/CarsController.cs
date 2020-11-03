@@ -58,6 +58,11 @@ namespace WebApiCar.Controllers
             return carList;
         }
 
+        /// <summary>
+        /// Get Cars by Vendor
+        /// </summary>
+        /// <param name="vendorGet">string of vendor to get from</param>
+        /// <returns>List of all cars by vendor</returns>
         // GET: api/Cars/ByVendor/VW
         [HttpGet("ByVendor/{vendorGet}", Name="GetByVendor")]
         public IEnumerable<Car> GetByVendor(string vendorGet)
@@ -92,6 +97,11 @@ namespace WebApiCar.Controllers
             return carList;
         }
 
+        /// <summary>
+        /// Get cars by price
+        /// </summary>
+        /// <param name="priceGet">int price cars should match</param>
+        /// <returns>List of cars by price</returns>
         // GET: api/Cars
         [HttpGet("ByPrice/{priceGet}", Name = "GetByPrice")]
         public IEnumerable<Car> GetByPrice(int priceGet)
@@ -126,6 +136,12 @@ namespace WebApiCar.Controllers
             return carList;
         }
 
+        /// <summary>
+        /// Get cars by price, ascending or descending.
+        /// </summary>
+        /// <param name="priceGet">int price cars should match</param>
+        /// <param name="ascending">Boolean ascending. True for ascending, false for descending</param>
+        /// <returns>List of cars by price.</returns>
         // GET: api/Cars
         [HttpGet("ByPrice/{priceGet}/{ascending}", Name = "GetByPriceOrdered")]
         public IEnumerable<Car> GetByPriceOrdered(int priceGet, bool ascending)
@@ -164,6 +180,12 @@ namespace WebApiCar.Controllers
             return carList;
         }
 
+        /// <summary>
+        /// Cars by vendor with matching price.
+        /// </summary>
+        /// <param name="vendorGet">string vendor of car</param>
+        /// <param name="priceGet">int price of car</param>
+        /// <returns>List of cars that matches parameters.</returns>
         // GET: api/Cars/ByVendor/VW/190000
         [HttpGet("ByVendor/{vendorGet}/{priceGet}", Name = "GetByVendorWithPrice")]
         public IEnumerable<Car> GetByVendorWithPrice(string vendorGet, int priceGet)
@@ -199,6 +221,11 @@ namespace WebApiCar.Controllers
             return carList;
         }
 
+        /// <summary>
+        /// Get Car By Id
+        /// </summary>
+        /// <param name="id">int ID of car.</param>
+        /// <returns>Car matching the ID</returns>
         // GET: api/Cars/5
         [HttpGet("{id}", Name = "Get")]
         public Car Get(int id)
